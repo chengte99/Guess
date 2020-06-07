@@ -3,6 +3,7 @@ package com.chengte99.guess
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,18 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.func_recycle.view.*
+import okhttp3.*
+import java.io.IOException
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = MainActivity::class.java.simpleName
+
     val functions = listOf<String>(
         "Camera",
         "Game",
@@ -29,6 +38,37 @@ class MainActivity : AppCompatActivity() {
         recycler.setHasFixedSize(true)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = FunctionAdapter()
+
+//        val httpAsync = "https://httpbin.org/json"
+//            .httpGet()
+//            .responseString{ request, response, result ->
+//                when(result) {
+//                    is Result.Failure -> {
+//                        val ex = result.getException()
+//                        println(ex)
+//                    }
+//                    is Result.Success -> {
+//                        val data = result.get()
+//                        println(data)
+//                    }
+//                }
+//            }
+//
+//        httpAsync.join()
+
+//        val client = OkHttpClient()
+//        val request = Request.Builder().url("https://httpbin.org/json").build()
+//        client.newCall(request).enqueue(object: Callback{
+//            override fun onFailure(call: Call, e: IOException) {
+//
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                val resStr = response.body?.string()
+//                Log.d(TAG, "onResponse: ${resStr}")
+//            }
+//
+//        })
     }
 
     inner class FunctionAdapter: RecyclerView.Adapter<FunctionViewHolder>() {
