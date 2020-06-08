@@ -12,11 +12,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.func_recycle.view.*
 import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 import kotlin.math.log
 
@@ -39,36 +43,48 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = FunctionAdapter()
 
-//        val httpAsync = "https://httpbin.org/json"
-//            .httpGet()
-//            .responseString{ request, response, result ->
-//                when(result) {
-//                    is Result.Failure -> {
-//                        val ex = result.getException()
-//                        println(ex)
-//                    }
-//                    is Result.Success -> {
-//                        val data = result.get()
-//                        println(data)
-//                    }
-//                }
-//            }
-//
-//        httpAsync.join()
+        //Fuel
+//        fuelGet()
+//        fuelPost()
+    }
 
-//        val client = OkHttpClient()
-//        val request = Request.Builder().url("https://httpbin.org/json").build()
-//        client.newCall(request).enqueue(object: Callback{
-//            override fun onFailure(call: Call, e: IOException) {
-//
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                val resStr = response.body?.string()
-//                Log.d(TAG, "onResponse: ${resStr}")
-//            }
-//
-//        })
+    private fun fuelPost() {
+        Fuel.post(
+            "http://ctl.5282288.net/appmenu_api/listApm.php",
+            listOf("CrlMode" to "appctl", "App" to "gbb", "IsDev" to "1")
+        )
+            .responseString { request, response, result ->
+                when (result) {
+                    is Result.Failure -> {
+                        val ex = result.getException()
+                        Log.d(TAG, "Result.Failure: ${ex}")
+                    }
+                    is Result.Success -> {
+                        val data = result.get()
+                        Log.d(TAG, "Result.Success: ${data}")
+                        val json = JSONObject(data)
+                        val app = json.getString("App")
+                        Log.d(TAG, "Result.App: ${app}")
+                    }
+                }
+            }
+    }
+
+    private fun fuelGet() {
+        "https://httpbin.org/get"
+            .httpGet()
+            .responseString { request, response, result ->
+                when (result) {
+                    is Result.Failure -> {
+                        val ex = result.getException()
+                        Log.d(TAG, "Failure.Success: ${ex}")
+                    }
+                    is Result.Success -> {
+                        val data = result.get()
+                        Log.d(TAG, "Result.Success: ${data}")
+                    }
+                }
+            }
     }
 
     inner class FunctionAdapter: RecyclerView.Adapter<FunctionViewHolder>() {
@@ -89,7 +105,6 @@ class MainActivity : AppCompatActivity() {
                 testFunc(position)
             }
         }
-
     }
 
     private fun testFunc(position: Int) {
